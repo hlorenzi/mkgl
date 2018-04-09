@@ -30,6 +30,18 @@ class Mat4
 	}
 
 
+	static scale(x, y, z)
+	{
+		return new Mat4(
+		[
+			[x, 0, 0, 0],
+			[0, y, 0, 0],
+			[0, 0, z, 0],
+			[0, 0, 0, 1]
+		])
+	}
+
+
 	static rotation(vec, radians)
 	{
 		const x = vec.x
@@ -65,10 +77,10 @@ class Mat4
 	{
 		return new Mat4(
 		[
-			[      2 * near / (right - left),                               0,                                0,  0],
-			[                              0,       2 * near / (top - bottom),                                0,  0],
-			[(right + left) / (right - left), (top + bottom) / (top - bottom),     -(far + near) / (far - near), -1],
-			[                              0,                               0, -(2 * far * near) / (far - near),  0]
+			[       2 * near / (right - left),                               0,                                0,  0 ],
+			[                               0,       2 * near / (top - bottom),                                0,  0 ],
+			[ (right + left) / (right - left), (top + bottom) / (top - bottom),     -(far + near) / (far - near), -1 ],
+			[                               0,                               0, -(2 * far * near) / (far - near),  0 ]
 		])
 	}
 
@@ -84,17 +96,17 @@ class Mat4
 
 	static lookat(eye, target, up)
 	{
-		const zaxis = (eye.sub(target)).normalized()
-		const xaxis = up.cross(zaxis).normalized()
+		const zaxis = eye.sub(target).normalize()
+		const xaxis = zaxis.cross(up).normalize()
 		const yaxis = zaxis.cross(xaxis)
 
 		return new Mat4(
 		[
-			[      xaxis.m[0],      yaxis.m[0],      zaxis.m[0], 0 ],
-			[      xaxis.m[1],      yaxis.m[1],      zaxis.m[1], 0 ],
-			[      xaxis.m[2],      yaxis.m[2],      zaxis.m[2], 0 ],
+			[         xaxis.x,         yaxis.x,         zaxis.x, 0 ],
+			[         xaxis.y,         yaxis.y,         zaxis.y, 0 ],
+			[         xaxis.z,         yaxis.z,         zaxis.z, 0 ],
 			[ -xaxis.dot(eye), -yaxis.dot(eye), -zaxis.dot(eye), 1 ]
-		]).transpose()
+		])
 	}
 
 
@@ -110,7 +122,7 @@ class Mat4
 	}
 
 
-	mulMat4(other)
+	mul(other)
 	{
 		let result =
 		[

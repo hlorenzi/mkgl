@@ -52,6 +52,15 @@ class Vec3
 	}
 
 
+	scale(f)
+	{
+		return new Vec3(
+			this.x * f,
+			this.y * f,
+			this.z * f)
+	}
+
+
 	dot(other)
 	{
 		return (this.x * other.x + this.y * other.y + this.z * other.z)

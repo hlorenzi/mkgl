@@ -117,7 +117,14 @@ class GLProgram
 	
 	setMat4(gl, unif, matrix)
 	{
-		gl.uniformMatrix4fv(this.uniforms[unif], false, matrix.asFloat32Array());
+		gl.uniformMatrix4fv(this.uniforms[unif], false, matrix.asFloat32Array())
+		return this
+	}
+	
+	
+	setVec4(gl, unif, vec)
+	{
+		gl.uniform4fv(this.uniforms[unif], new Float32Array(vec))
 		return this
 	}
 	

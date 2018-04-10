@@ -60,13 +60,15 @@ const fragmentSrc = `
 	precision highp float;
 	
 	varying vec4 vNormal;
+	
+	uniform vec4 uDiffuseColor;
 
 	void main()
 	{
 		vec4 lightDir = vec4(-2.2, 0.2, 1, 0);
 		
 		vec4 ambientColor = vec4(0.2, 0.2, 0.2, 1);
-		vec4 diffuseColor = vec4(1, 1, 1, 1);
+		vec4 diffuseColor = uDiffuseColor;
 		vec4 lightColor = vec4(1, 1, 1, 1);
 		
 		float lightIncidence = max(0.0, dot(normalize(lightDir), normalize(vNormal)));

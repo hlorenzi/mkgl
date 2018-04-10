@@ -5,27 +5,27 @@ class Kart
 		this.director = director
 	
 		let playerBuilder = new ModelBuilder()
-		playerBuilder.addCube(-1, -1, -1, 1, 1, 1)
+		playerBuilder.addSphere(-1, -1, -1, 1, 1, 1, 5)
 		playerBuilder.calculateNormals()
 		
 		this.model = playerBuilder.makeModel(gl)
 		
-		this.timer = 0
+		this.pos = new Vec3(-15 + Math.random() * 30, -15 + Math.random() * 30, -45 + Math.random() * 40)
+		this.speed = new Vec3(0, 0, 0)
 		
 		this.transform = new GfxNodeTransform().attach(this.director.scene.root)
-		this.renderer = new GfxNodeRenderer().attach(this.transform).setModel(this.model).setMaterial(this.director.material)
+		this.renderer = new GfxNodeRenderer().attach(this.transform).setModel(this.model).setMaterial(this.director.material).setDiffuseColor([1, 0, 0, 1])
 	}
 	
 	
 	processFrame()
 	{
-		this.timer += 0.1
+		this.speed = this.speed.add(new Vec3(0, 0, 0.01))
 		
-		let x = (this.timer * 8 / 30) % 30
-		let y = this.timer % 30
-		let z = this.director.track.collision.raycast(new Vec3(x, y, -15), new Vec3(0, 0, 1))
-		z = (z == null ? 0 : z.pos.z)
+		let lastPos = this.pos
+		this.pos = this.director.track.collision.solve(this.pos, this.speed, 0.1)
+		this.speed = this.pos.sub(lastPos)
 		
-		this.transform.setTranslation(new Vec3(x, y, z)).setScaling(new Vec3(0.1, 0.1, 1))
+		this.transform.setTranslation(this.pos.add(new Vec3(0, 0, -0.4))).setScaling(new Vec3(0.5, 0.5, 0.5))
 	}
 }

@@ -44,53 +44,55 @@ class CollisionMesh
 			if (v < 0 || u + v > det)
 				continue
 			
-			const dist = Math.abs(tri.v1to2.dot(crossQ) / det)
+			const distScaled = Math.abs(tri.v1to2.dot(crossQ) / det)
 			
-			if (nearestHit == null || dist < nearestHit.dist)
+			if (nearestHit == null || distScaled < nearestHit.distScaled)
 			{
 				nearestHit =
 				{
-					dist: dist,
-					pos: origin.add(dir.scale(dist)),
+					distScaled: distScaled,
+					pos: origin.add(dir.scale(distScaled)),
 					u: u,
 					v: v,
 					tri: tri
 				}
 			}
-			
-			/*var triangleVec1 = obj.mesh[i].v21;
-			var triangleVec2 = obj.mesh[i].v31;
-			
-			var crossVecP = vec3.cross(rayDirection, triangleVec2, obj.tempVec);
-			var det = vec3.dot(crossVecP, triangleVec1);
-			
-			if (det < margin) continue;
-			
-			var triangleVec0 = obj.mesh[i].v1;
-			var triangleVertToOrigin = vec3.subtract(rayOrigin, triangleVec0, obj.tempVec2);
-			var u = vec3.dot(triangleVertToOrigin, crossVecP);
-			
-			if (u < 0 || u > det) continue;
-			
-			var crossVecQ = vec3.cross(triangleVertToOrigin, triangleVec1, obj.tempVec3);
-			var v = vec3.dot(rayDirection, crossVecQ);
-			
-			if (v < 0 || u + v > det) continue;
-			
-			var dist = Math.abs(vec3.dot(triangleVec2, crossVecQ) / det);
-			
-			if (dist < obj.intersectData.distance) {
-				obj.intersectData.hit = 1;
-				vec3.set(rayDirection, obj.intersectData.position);
-				vec3.scale(obj.intersectData.position, dist);
-				vec3.add(obj.intersectData.position, rayOrigin);
-				obj.intersectData.distance = dist;
-				obj.intersectData.u = u;
-				obj.intersectData.v = v;
-				obj.intersectData.index = i;
-			}*/
 		}
 		
 		return nearestHit
+	}
+	
+	
+	solve(pos, speed, margin = 0.1, cutoff = 0.001)
+	{
+		let iters = 0
+		
+		while (speed.magn() > 0.001 && iters < 10)
+		{
+			iters += 1
+			
+			let speedMagn = speed.magn()
+			let speedNorm = speed.normalize()
+			
+			let hit = this.raycast(pos, speedNorm)
+			if (hit == null || hit.distScaled >= speedMagn + margin)
+			{
+				pos = pos.add(speed)
+				speed = new Vec3(0, 0, 0)
+				break
+			}
+			/*else if (hit.distScaled < margin)
+			{
+				let toPlane = pos.directionToPlane(hit.tri.normal, hit.tri.v1)
+				pos = pos.sub(toPlane.normalize().scale(-(margin - toPlane.magn())))
+			}*/
+			else
+			{
+				speed = speedNorm.scale(speedMagn - (hit.distScaled - margin)).projectOnPlane(hit.tri.normal)
+				pos = pos.add(speedNorm.scale(hit.distScaled - margin))
+			}
+		}
+		
+		return pos
 	}
 }

@@ -34,6 +34,7 @@ class GfxScene
 			node.material.program.setMat4(gl, "uMatProj", camera.projection)
 			node.material.program.setMat4(gl, "uMatView", camera.view)
 			node.material.program.setMat4(gl, "uMatModel", transform)
+			node.material.program.setVec4(gl, "uDiffuseColor", node.diffuseColor)
 			node.material.program.drawTriangles(gl, node.model.positions.count / 3)
 		}
 		
@@ -198,6 +199,7 @@ class GfxNodeRenderer extends GfxNode
 		super()
 		this.model = null
 		this.material = null
+		this.diffuseColor = [1, 1, 1, 1]
 	}
 	
 	
@@ -211,6 +213,13 @@ class GfxNodeRenderer extends GfxNode
 	setMaterial(material)
 	{
 		this.material = material
+		return this
+	}
+	
+	
+	setDiffuseColor(color)
+	{
+		this.diffuseColor = color
 		return this
 	}
 }

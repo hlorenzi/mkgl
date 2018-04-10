@@ -5,21 +5,32 @@ class Track
 		this.director = director
 		
 		let trackBuilder = new ModelBuilder()
-		let getHeightAt = (x, y) => Math.cos(x * 0.5) * Math.sin(y * 0.7) * 2
+		let getHeightAt = (x, y) => -2 + Math.cos(Math.sqrt(x * x + y * y)) * 1
 		
-		for (let y = 0; y < 30; y++)
+		let xMin = -15
+		let yMin = -15
+		let xMax = 15
+		let yMax = 15
+		let subdiv = 40
+		
+		for (let j = 0; j < subdiv; j++)
 		{
-			for (let x = 0; x < 30; x++)
+			for (let i = 0; i < subdiv; i++)
 			{
+				let x1 = xMin + (xMax - xMin) * ( i      / (subdiv - 1))
+				let x2 = xMin + (xMax - xMin) * ((i + 1) / (subdiv - 1))
+				let y1 = yMin + (yMax - yMin) * ( j      / (subdiv - 1))
+				let y2 = yMin + (yMax - yMin) * ((j + 1) / (subdiv - 1))
+				
 				trackBuilder.addQuad(
-					new Vec3(x,     y,     getHeightAt(x,     y,   )),
-					new Vec3(x + 1, y,     getHeightAt(x + 1, y,   )),
-					new Vec3(x + 1, y + 1, getHeightAt(x + 1, y + 1)),
-					new Vec3(x,     y + 1, getHeightAt(x,     y + 1)))
+					new Vec3(x1, y1, getHeightAt(x1, y1)),
+					new Vec3(x2, y1, getHeightAt(x2, y1)),
+					new Vec3(x2, y2, getHeightAt(x2, y2)),
+					new Vec3(x1, y2, getHeightAt(x1, y2)))
 			}
 		}
 		
-		trackBuilder.addCube(10, 10, -2, 16, 16, 1)
+		trackBuilder.addCube(-100, -100, 0, 100, 100, 1)
 		trackBuilder.calculateNormals()
 		
 		this.model = trackBuilder.makeModel(gl)

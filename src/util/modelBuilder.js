@@ -42,15 +42,6 @@ class ModelBuilder
 				let f3 = p2.lerp(p3, (j + 1) / subdivs)
 				let f4 = p1.lerp(p4, (j + 1) / subdivs)
 				
-				/*console.log(p1)
-				console.log(p2)
-				console.log(p3)
-				console.log(p4)
-				console.log(f1)
-				console.log(f2)
-				console.log(f3)
-				console.log(f4)*/
-				
 				this.addQuad(f1, f2, f3, f4)
 			}
 		}
@@ -70,7 +61,7 @@ class ModelBuilder
 		let v4Bot = new Vec3(x1, y2, z2)
 		
 		this.addQuadSubdiv(v1Top, v2Top, v3Top, v4Top, subdivs)
-		this.addQuadSubdiv(v1Bot, v2Bot, v3Bot, v4Bot, subdivs)
+		this.addQuadSubdiv(v1Bot, v4Bot, v3Bot, v2Bot, subdivs)
 		this.addQuadSubdiv(v2Top, v1Top, v1Bot, v2Bot, subdivs)
 		this.addQuadSubdiv(v3Top, v2Top, v2Bot, v3Bot, subdivs)
 		this.addQuadSubdiv(v4Top, v3Top, v3Bot, v4Bot, subdivs)
@@ -99,7 +90,7 @@ class ModelBuilder
 	}
 	
 	
-	calculateNormals()
+	calculateNormals(maxSmoothAngle = 1.5)
 	{
 		for (let i = 0; i < this.positions.length; i += 3)
 		{
@@ -116,6 +107,31 @@ class ModelBuilder
 			this.normals[i + 1] = normal
 			this.normals[i + 2] = normal
 		}
+		
+		let normalAccum = []
+		let normalCount = []
+		
+		for (let j = 0; j < this.positions.length; j++)
+		{
+			normalAccum[j] = this.normals[j]
+			normalCount[j] = 1
+			
+			for (let i = 0; i < this.positions.length; i++)
+			{
+				if (i == j)
+					continue
+				
+				if (this.positions[j].sub(this.positions[i]).magn() < 0.1 &&
+					Math.abs(Math.acos(this.normals[j].dot(this.normals[i]))) <= maxSmoothAngle)
+				{
+					normalAccum[j] = normalAccum[j].add(this.normals[i])
+					normalCount[j] += 1
+				}
+			}
+		}
+		
+		for (let i = 0; i < this.positions.length; i++)
+			this.normals[i] = normalAccum[i].scale(1 / normalCount[i]).normalize()
 	}
 	
 	

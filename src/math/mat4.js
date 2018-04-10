@@ -59,6 +59,40 @@ class Mat4
 			[          0,            0,          0,   1]
 		])
 	}
+	
+	
+	static rotationFromTo(fromVec, toVec)
+	{
+		fromVec = fromVec.normalize()
+		toVec = toVec.normalize()
+		
+		const axis = fromVec.cross(toVec)
+		const angle = Math.acos(fromVec.dot(toVec))
+		
+		return Mat4.rotation(axis, -angle)
+	}
+	
+	
+	static basisRotation(i1, j1, k1, i2, j2, k2)
+	{
+		const basis1 = new Mat4(
+		[
+			[i1.x, j1.x, k1.x, 0],
+			[i1.y, j1.y, k1.y, 0],
+			[i1.z, j1.z, k1.z, 0],
+			[   0,    0,    0, 1],
+		])
+		
+		const basis2 = new Mat4(
+		[
+			[i2.x, j2.x, k2.x, 0],
+			[i2.y, j2.y, k2.y, 0],
+			[i2.z, j2.z, k2.z, 0],
+			[   0,    0,    0, 1],
+		])
+		
+		return basis1.mul(basis2.transpose())
+	}
 
 
 	static ortho(left, right, top, bottom, near, far)

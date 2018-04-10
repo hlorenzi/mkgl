@@ -149,6 +149,7 @@ class GfxNodeTransform extends GfxNode
 		this.scaling = null
 		this.rotationAxis = null
 		this.rotationAngle = null
+		this.customMatrix = null
 	}
 	
 	
@@ -174,10 +175,20 @@ class GfxNodeTransform extends GfxNode
 	}
 	
 	
+	setCustom(matrix)
+	{
+		this.customMatrix = matrix
+		return this
+	}
+	
+	
 	computeMatrix()
 	{
 		let matrix = Mat4.identity()
 		
+		if (this.customMatrix != null)
+			matrix = matrix.mul(this.customMatrix)
+			
 		if (this.scaling != null)
 			matrix = matrix.mul(Mat4.scale(this.scaling.x, this.scaling.y, this.scaling.z))
 		

@@ -11,7 +11,7 @@ class Track
 		let yMin = -15
 		let xMax = 15
 		let yMax = 15
-		let subdiv = 40
+		let subdiv = 30
 		
 		for (let j = 0; j < subdiv; j++)
 		{

@@ -85,12 +85,15 @@ class GLProgram
 		
 		for (let unif of unifs)
 			this.uniforms[unif] = gl.getUniformLocation(this.id, unif)
+		
+		return this
 	}
 	
 	
 	use(gl)
 	{
 		gl.useProgram(this.id)
+		return this
 	}
 	
 	
@@ -99,6 +102,7 @@ class GLProgram
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer.id)
 		gl.vertexAttribPointer(this.attributes[attrb], 3, gl.FLOAT, false, 0, 0)
 		gl.enableVertexAttribArray(this.attributes[attrb])
+		return this
 	}
 	
 	
@@ -107,23 +111,27 @@ class GLProgram
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer.id)
 		gl.vertexAttribPointer(this.attributes[attrb], 3, gl.FLOAT, false, 0, 0)
 		gl.enableVertexAttribArray(this.attributes[attrb])
+		return this
 	}
 	
 	
 	setMat4(gl, unif, matrix)
 	{
 		gl.uniformMatrix4fv(this.uniforms[unif], false, matrix.asFloat32Array());
+		return this
 	}
 	
 	
 	drawTriangles(gl, count, offset = 0)
 	{
 		gl.drawArrays(gl.TRIANGLES, offset, count)
+		return this
 	}
 	
 	
 	drawTriangleStrip(gl, count, offset = 0)
 	{
 		gl.drawArrays(gl.TRIANGLE_STRIP, offset, count)
+		return this
 	}
 }

@@ -67,7 +67,7 @@ class ModelBuilder
 	}
 	
 	
-	makeBuffers(gl)
+	makeModel(gl)
 	{
 		let positions = []
 		let normals = []
@@ -83,10 +83,11 @@ class ModelBuilder
 			normals.push(this.normals[i].z)
 		}
 		
-		let buffers = { }
-		buffers.positions = GLBuffer.makePosition(gl, positions)
-		buffers.normals = GLBuffer.makeNormal(gl, normals)
-		return buffers
+		let model = new GfxModel()
+			.setPositions(GLBuffer.makePosition(gl, positions))
+			.setNormals(GLBuffer.makeNormal(gl, normals))
+		
+		return model
 	}
 	
 	

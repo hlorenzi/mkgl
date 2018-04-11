@@ -65,6 +65,8 @@ class CollisionMesh
 	
 	solve(pos, speed, margin = 0.1, friction = 0.01, cutoff = 0.001)
 	{
+		let frictionFactor = 0
+		
 		let iters = 0
 		
 		while (speed.magn() > 0.001 && iters < 10)
@@ -90,9 +92,10 @@ class CollisionMesh
 			{
 				speed = speedNorm.scale(speedMagn - (hit.distScaled - margin) - friction).projectOnPlane(hit.tri.normal)
 				pos = pos.add(speedNorm.scale(hit.distScaled - margin))
+				frictionFactor += speedMagn - speed.magn()
 			}
 		}
 		
-		return pos
+		return [pos, frictionFactor]
 	}
 }

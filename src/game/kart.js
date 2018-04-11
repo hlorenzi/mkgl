@@ -8,10 +8,10 @@ class Kart
 		
 		this.bodies =
 		[
-			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
-			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
-			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
-			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Wheel(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Wheel(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Wheel(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Wheel(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
 		]
 		
 		this.reset()
@@ -27,7 +27,6 @@ class Kart
 		
 		this.transform = new GfxNodeTransform().attach(this.director.scene.root)
 		this.renderer = new GfxNodeRenderer().attach(this.transform).setModel(this.model).setMaterial(this.director.material).setDiffuseColor([0, 0, 1, 1])
-		
 	}
 	
 	
@@ -59,6 +58,7 @@ class Kart
 		]
 		
 		this.turningFactor = 0
+		this.accelFactor = 0
 	}
 	
 	
@@ -74,7 +74,7 @@ class Kart
 		if (input.reset)
 			this.reset()
 		
-		if (input.forward || input.reverse)
+		/*if (input.forward || input.reverse)
 		{
 			let accel = this.getForwardVector().scale(input.forward ? 1 : input.reverse ? -1 : 0).add(this.getSidewaysVector().scale(-this.turningFactor)).normalize()
 			
@@ -86,7 +86,7 @@ class Kart
 			//this.bodies[2].speed = this.bodies[2].speed.add(rightAccel)
 			//this.bodies[3].speed = this.bodies[3].speed.add(leftAccel)
 			//this.bodies[4].speed = this.bodies[4].speed.add(leftAccel.add(rightAccel).scale(1 / 2))
-		}
+		}*/
 		
 		if (input.turnLeft)
 			this.turningFactor = Math.max(this.turningFactor - 0.1, -1)
@@ -98,6 +98,18 @@ class Kart
 				this.turningFactor = Math.max(this.turningFactor - 0.15, 0)
 			else
 				this.turningFactor = Math.min(this.turningFactor + 0.15, 0)
+		}
+		
+		if (input.reverse)
+			this.accelFactor = Math.max(this.accelFactor - 0.1, -1)
+		else if (input.forward)
+			this.accelFactor = Math.min(this.accelFactor + 0.1,  1)
+		else
+		{
+			if (this.accelFactor > 0)
+				this.accelFactor = Math.max(this.accelFactor - 0.15, 0)
+			else
+				this.accelFactor = Math.min(this.accelFactor + 0.15, 0)
 		}
 		
 		for (let joint of this.joints)
@@ -118,7 +130,15 @@ class Kart
 		}
 		
 		for (let body of this.bodies)
+		{
+			let isFrontWheel = (body == this.bodies[0] || body == this.bodies[1])
+			let turningMatrix = Mat4.rotation(new Vec3(0, 0, -1), (isFrontWheel ? this.turningFactor : 0))
+			
+			body.rollDirection = turningMatrix.mulDirection(this.getForwardVector().projectOnPlane(new Vec3(0, 0, 1)).normalize())
+			body.rollSpeed = this.accelFactor
+			
 			body.processFrame()
+		}
 	}
 	
 	

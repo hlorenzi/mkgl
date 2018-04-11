@@ -113,4 +113,10 @@ class Vec3
 		
 		return pointOnPlane.add(proj).sub(this)
 	}
+	
+	
+	asArray()
+	{
+		return [this.x, this.y, this.z]
+	}
 }

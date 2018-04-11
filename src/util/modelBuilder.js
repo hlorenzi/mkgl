@@ -108,21 +108,35 @@ class ModelBuilder
 			this.normals[i + 2] = normal
 		}
 		
+		let verticesSet = new Map()
+		for (let j = 0; j < this.positions.length; j++)
+		{
+			let key = this.positions[j].asArray().map(x => Math.round(x * 100) / 100).toString()
+			
+			let value = verticesSet.get(key)
+			if (value === undefined)
+				verticesSet.set(key, [j])
+			else
+				value.push(j)
+		}
+		
 		let normalAccum = []
 		let normalCount = []
-		
 		for (let j = 0; j < this.positions.length; j++)
 		{
 			normalAccum[j] = this.normals[j]
 			normalCount[j] = 1
 			
-			for (let i = 0; i < this.positions.length; i++)
+			let vertices = verticesSet.get(this.positions[j].asArray().map(x => Math.round(x * 100) / 100).toString())
+			if (vertices === undefined)
+				continue
+			
+			for (let i of vertices)
 			{
 				if (i == j)
 					continue
 				
-				if (this.positions[j].sub(this.positions[i]).magn() < 0.1 &&
-					Math.abs(Math.acos(this.normals[j].dot(this.normals[i]))) <= maxSmoothAngle)
+				if (Math.abs(Math.acos(this.normals[j].dot(this.normals[i]))) <= maxSmoothAngle)
 				{
 					normalAccum[j] = normalAccum[j].add(this.normals[i])
 					normalCount[j] += 1

@@ -12,7 +12,6 @@ class Kart
 			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
 			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
 			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
-			new Sphere(this.director, new Vec3(0, 0, 0), [0, 0, 1, 1]),
 		]
 		
 		this.reset()
@@ -40,17 +39,15 @@ class Kart
 		this.bodies[1].pos = pos.add(new Vec3(1.0, 1.0, -10.0))
 		this.bodies[2].pos = pos.add(new Vec3(0.0, 1.0, -10.0))
 		this.bodies[3].pos = pos.add(new Vec3(0.0, 0.0, -10.0))
-		this.bodies[4].pos = pos.add(new Vec3(0.5, 0.5, -11.5))
 		
 		this.bodies[0].speed = new Vec3(0, 0, 0)
 		this.bodies[1].speed = new Vec3(0, 0, 0)
 		this.bodies[2].speed = new Vec3(0, 0, 0)
 		this.bodies[3].speed = new Vec3(0, 0, 0)
-		this.bodies[4].speed = new Vec3(0, 0, 0)
 		
 		this.joints =
 		[
-			// Edges
+			// Bottom Edges
 			{ body1: this.bodies[0], body2: this.bodies[1], length: this.size * 3 / 3, tensionK: 0.1, frictionK: 0.1 },
 			{ body1: this.bodies[2], body2: this.bodies[3], length: this.size * 3 / 3, tensionK: 0.1, frictionK: 0.1 },
 			{ body1: this.bodies[0], body2: this.bodies[3], length: this.size * 4 / 3, tensionK: 0.1, frictionK: 0.1 },
@@ -59,12 +56,6 @@ class Kart
 			// Crossing
 			{ body1: this.bodies[0], body2: this.bodies[2], length: this.size * 5 / 3, tensionK: 0.25, frictionK: 0.1 },
 			{ body1: this.bodies[1], body2: this.bodies[3], length: this.size * 5 / 3, tensionK: 0.25, frictionK: 0.1 },
-			
-			// Pyramid
-			{ body1: this.bodies[0], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
-			{ body1: this.bodies[1], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
-			{ body1: this.bodies[2], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
-			{ body1: this.bodies[3], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
 		]
 		
 		this.turningFactor = 0

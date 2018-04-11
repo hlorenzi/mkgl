@@ -12,12 +12,11 @@ class TrackDirector
 		this.camera = new GfxCamera()
 		
 		this.track = new Track(this)
+		this.kart = new Kart(this)
 		
 		this.objects = []
 		this.objects.push(this.track)
-		
-		for (let i = 0; i < 10; i++)
-			this.objects.push(new Kart(this))
+		this.objects.push(this.kart)
 		
 		this.rot = 0
 	}
@@ -25,10 +24,13 @@ class TrackDirector
 	
 	processFrame()
 	{
+		let kartPos = this.kart.getCenter()
+		let kartForward = this.kart.getForwardVector().projectOnPlane(new Vec3(0, 0, -1)).normalize()
+		
 		this.rot += 0.001
 		this.camera
-			.setProjection(Mat4.perspective(30 * Math.PI / 180, canvas.width / canvas.height, 0.1, 100))
-			.setView(Mat4.lookat(new Vec3(Math.sin(this.rot) * 25, -Math.cos(this.rot) * 25, -15), new Vec3(0, 0, 0), new Vec3(0, 0, -1)))
+			.setProjection(Mat4.perspective(30 * Math.PI / 180, canvas.width / canvas.height, 1, 400))
+			.setView(Mat4.lookat(kartPos.sub(kartForward.scale(15)).add(new Vec3(0, 0, -5)), kartPos, new Vec3(0, 0, -1)))
 	
 		for (let obj of this.objects)
 			obj.processFrame()

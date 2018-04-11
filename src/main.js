@@ -2,6 +2,15 @@ let canvas = null
 let gl = null
 let director = null
 
+let input =
+{
+	reset: false,
+	forward: false,
+	reverse: false,
+	turnLeft: false,
+	turnRight: false
+}
+
 
 function main()
 {
@@ -23,6 +32,15 @@ function main()
 	processFrame()
 	
 	window.onresize = onResize
+	window.onkeydown = (ev) => onKey(ev, true)
+	window.onkeyup = (ev) => onKey(ev, false)
+}
+
+
+function processFrame()
+{
+	director.processFrame()
+	window.requestAnimationFrame(processFrame)
 }
 
 
@@ -33,6 +51,28 @@ function onResize()
 	canvas.height = bodyRect.height
 	
 	gl.viewport(0, 0, canvas.width, canvas.height)
+}
+
+
+function onKey(ev, down)
+{
+	switch (ev.key)
+	{
+		case " ": input.forward = down; break
+		case "ArrowUp": input.forward = down; break
+		case "ArrowDown": input.reverse = down; break
+		case "ArrowLeft": input.turnLeft = down; break
+		case "ArrowRight": input.turnRight = down; break
+		case "w": input.forward = down; break
+		case "s": input.reverse = down; break
+		case "a": input.turnLeft = down; break
+		case "d": input.turnRight = down; break
+		case "r": input.reset = down; break
+		
+		default: return
+	}
+	
+	ev.preventDefault()
 }
 
 
@@ -65,7 +105,7 @@ const fragmentSrc = `
 
 	void main()
 	{
-		vec4 lightDir = vec4(-2.2, 0.2, 1, 0);
+		vec4 lightDir = vec4(2.2, 0.2, 1, 0);
 		
 		vec4 ambientColor = vec4(0.2, 0.2, 0.2, 1);
 		vec4 diffuseColor = uDiffuseColor;
@@ -75,10 +115,3 @@ const fragmentSrc = `
 		
 		gl_FragColor = diffuseColor * mix(ambientColor, lightColor, lightIncidence);
 	}`
-
-
-function processFrame()
-{
-	director.processFrame()
-	window.requestAnimationFrame(processFrame)
-}

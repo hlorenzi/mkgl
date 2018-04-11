@@ -4,41 +4,23 @@ class Kart
 	{
 		this.director = director
 		
-		let pos = new Vec3(-10 + Math.random() * 20, -10 + Math.random() * 20, -25 + Math.random() * 20)
-		let size = 1.5
-	
+		this.size = 1.5
+		
 		this.bodies =
 		[
-			new Sphere(director, pos.add(new Vec3(1.0, 0.0, -10.0)), [1, 0, 0, 1]),
-			new Sphere(director, pos.add(new Vec3(1.0, 1.0, -10.0)), [1, 0, 0, 1]),
-			new Sphere(director, pos.add(new Vec3(0.0, 1.0, -10.0)), [1, 0, 0, 1]),
-			new Sphere(director, pos.add(new Vec3(0.0, 0.0, -10.0)), [1, 0, 0, 1]),
-			new Sphere(director, pos.add(new Vec3(0.5, 0.5, -11.5)), [0, 0, 1, 1]),
+			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Sphere(this.director, new Vec3(0, 0, 0), [1, 0, 0, 1]),
+			new Sphere(this.director, new Vec3(0, 0, 0), [0, 0, 1, 1]),
 		]
 		
-		this.joints =
-		[
-			// Edges
-			{ body1: this.bodies[0], body2: this.bodies[1], length: size * 3 / 3, tensionK: 0.1, frictionK: 0.1 },
-			{ body1: this.bodies[2], body2: this.bodies[3], length: size * 3 / 3, tensionK: 0.1, frictionK: 0.1 },
-			{ body1: this.bodies[0], body2: this.bodies[3], length: size * 4 / 3, tensionK: 0.1, frictionK: 0.1 },
-			{ body1: this.bodies[1], body2: this.bodies[2], length: size * 4 / 3, tensionK: 0.1, frictionK: 0.1 },
-			
-			// Crossing
-			{ body1: this.bodies[0], body2: this.bodies[2], length: size * 5 / 3, tensionK: 0.1, frictionK: 0.1 },
-			{ body1: this.bodies[1], body2: this.bodies[3], length: size * 5 / 3, tensionK: 0.1, frictionK: 0.1 },
-			
-			// Pyramid
-			{ body1: this.bodies[0], body2: this.bodies[4], length: size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
-			{ body1: this.bodies[1], body2: this.bodies[4], length: size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
-			{ body1: this.bodies[2], body2: this.bodies[4], length: size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
-			{ body1: this.bodies[3], body2: this.bodies[4], length: size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
-		]
+		this.reset()
 		
 		let builder = new ModelBuilder()
 		builder.addCube(
-			-size * 4 / 3 / 2, -size * 3 / 3 / 2, -size * 1 / 3 / 2,
-			+size * 4 / 3 / 2, +size * 3 / 3 / 2, +size * 1 / 3 / 2)
+			-this.size * 4 / 3 / 2, -this.size * 3 / 3 / 2, -this.size * 1 / 3 / 2,
+			+this.size * 4 / 3 / 2, +this.size * 3 / 3 / 2, +this.size * 1 / 3 / 2)
 			
 		builder.calculateNormals()
 		
@@ -46,11 +28,87 @@ class Kart
 		
 		this.transform = new GfxNodeTransform().attach(this.director.scene.root)
 		this.renderer = new GfxNodeRenderer().attach(this.transform).setModel(this.model).setMaterial(this.director.material).setDiffuseColor([0, 0, 1, 1])
+		
+	}
+	
+	
+	reset()
+	{
+		let pos = new Vec3(-10, 0, -5)//-10 + Math.random() * 20, -10 + Math.random() * 20, -25 + Math.random() * 20)
+	
+		this.bodies[0].pos = pos.add(new Vec3(1.0, 0.0, -10.0))
+		this.bodies[1].pos = pos.add(new Vec3(1.0, 1.0, -10.0))
+		this.bodies[2].pos = pos.add(new Vec3(0.0, 1.0, -10.0))
+		this.bodies[3].pos = pos.add(new Vec3(0.0, 0.0, -10.0))
+		this.bodies[4].pos = pos.add(new Vec3(0.5, 0.5, -11.5))
+		
+		this.bodies[0].speed = new Vec3(0, 0, 0)
+		this.bodies[1].speed = new Vec3(0, 0, 0)
+		this.bodies[2].speed = new Vec3(0, 0, 0)
+		this.bodies[3].speed = new Vec3(0, 0, 0)
+		this.bodies[4].speed = new Vec3(0, 0, 0)
+		
+		this.joints =
+		[
+			// Edges
+			{ body1: this.bodies[0], body2: this.bodies[1], length: this.size * 3 / 3, tensionK: 0.1, frictionK: 0.1 },
+			{ body1: this.bodies[2], body2: this.bodies[3], length: this.size * 3 / 3, tensionK: 0.1, frictionK: 0.1 },
+			{ body1: this.bodies[0], body2: this.bodies[3], length: this.size * 4 / 3, tensionK: 0.1, frictionK: 0.1 },
+			{ body1: this.bodies[1], body2: this.bodies[2], length: this.size * 4 / 3, tensionK: 0.1, frictionK: 0.1 },
+			
+			// Crossing
+			{ body1: this.bodies[0], body2: this.bodies[2], length: this.size * 5 / 3, tensionK: 0.25, frictionK: 0.1 },
+			{ body1: this.bodies[1], body2: this.bodies[3], length: this.size * 5 / 3, tensionK: 0.25, frictionK: 0.1 },
+			
+			// Pyramid
+			{ body1: this.bodies[0], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
+			{ body1: this.bodies[1], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
+			{ body1: this.bodies[2], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
+			{ body1: this.bodies[3], body2: this.bodies[4], length: this.size * 4 / 3, tensionK: 1.0, frictionK: 0.1 },
+		]
+		
+		this.turningFactor = 0
 	}
 	
 	
 	processFrame()
 	{
+		this.processPhysics()		
+		this.positionModel()
+	}
+	
+	
+	processPhysics()
+	{
+		if (input.reset)
+			this.reset()
+		
+		if (input.forward || input.reverse)
+		{
+			let accel = this.getForwardVector().scale(input.forward ? 1 : input.reverse ? -1 : 0).add(this.getSidewaysVector().scale(-this.turningFactor)).normalize()
+			
+			let leftAccel  = accel.scale(1 - Math.max( this.turningFactor, 0)).scale(0.05)
+			let rightAccel = accel.scale(1 - Math.max(-this.turningFactor, 0)).scale(0.05)
+			
+			this.bodies[0].speed = this.bodies[0].speed.add(leftAccel)
+			this.bodies[1].speed = this.bodies[1].speed.add(rightAccel)
+			//this.bodies[2].speed = this.bodies[2].speed.add(rightAccel)
+			//this.bodies[3].speed = this.bodies[3].speed.add(leftAccel)
+			//this.bodies[4].speed = this.bodies[4].speed.add(leftAccel.add(rightAccel).scale(1 / 2))
+		}
+		
+		if (input.turnLeft)
+			this.turningFactor = Math.max(this.turningFactor - 0.1, -1)
+		else if (input.turnRight)
+			this.turningFactor = Math.min(this.turningFactor + 0.1,  1)
+		else
+		{
+			if (this.turningFactor > 0)
+				this.turningFactor = Math.max(this.turningFactor - 0.15, 0)
+			else
+				this.turningFactor = Math.min(this.turningFactor + 0.15, 0)
+		}
+		
 		for (let joint of this.joints)
 		{
 			let dir  = joint.body1.pos.sub(joint.body2.pos)
@@ -70,21 +128,47 @@ class Kart
 		
 		for (let body of this.bodies)
 			body.processFrame()
-		
-		let c = this.bodies[0].pos.add(this.bodies[1].pos).add(this.bodies[2].pos).add(this.bodies[3].pos).scale(1 / 4)
-		
-		let front = this.bodies[0].pos.add(this.bodies[1].pos).scale(1 / 2)
-		let rear  = this.bodies[2].pos.add(this.bodies[3].pos).scale(1 / 2)
-		
-		let yaw = front.sub(rear).normalize()
-		let roll = this.bodies[1].pos.sub(this.bodies[0].pos).normalize()
+	}
+	
+	
+	positionModel()
+	{
+		let forward = this.getForwardVector()
+		let sideways = this.getSidewaysVector()
 		
 		let matrix = Mat4.basisRotation(
 			new Vec3(1, 0, 0), new Vec3(0, 1, 0), new Vec3(0, 0, 1),
-			yaw, roll, yaw.cross(roll))
+			forward, sideways, forward.cross(sideways))
 			
 		matrix = Mat4.translation(0, 0, -1).mul(matrix)
 			
-		this.transform.setCustom(matrix).setTranslation(c)
+		this.transform.setCustom(matrix).setTranslation(this.getCenter())
+	}
+	
+	
+	getCenter()
+	{
+		return this.bodies[0].pos.add(this.bodies[1].pos).add(this.bodies[2].pos).add(this.bodies[3].pos).scale(1 / 4)
+	}
+	
+	
+	getForwardVector()
+	{
+		let front = this.bodies[0].pos.add(this.bodies[1].pos).scale(1 / 2)
+		let rear  = this.bodies[2].pos.add(this.bodies[3].pos).scale(1 / 2)
+		
+		return front.sub(rear).normalize()
+	}
+	
+	
+	getSidewaysVector()
+	{
+		return this.bodies[1].pos.sub(this.bodies[0].pos).normalize()
+	}
+	
+	
+	getUpVector()
+	{
+		return this.bodies[4].pos.sub(this.getCenter()).normalize()
 	}
 }

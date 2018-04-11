@@ -22,7 +22,7 @@ class Sphere
 	
 	processFrame()
 	{
-		this.speed = this.speed.add(new Vec3(0, 0, 0.01))
+		this.speed = this.speed.add(new Vec3(0, 0, 0.02))
 		
 		let lastPos = this.pos
 		this.pos = this.director.track.collision.solve(this.pos, this.speed, 0.1)

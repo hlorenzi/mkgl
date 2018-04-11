@@ -63,7 +63,7 @@ class CollisionMesh
 	}
 	
 	
-	solve(pos, speed, margin = 0.1, cutoff = 0.001)
+	solve(pos, speed, margin = 0.1, friction = 0.01, cutoff = 0.001)
 	{
 		let iters = 0
 		
@@ -88,7 +88,7 @@ class CollisionMesh
 			}*/
 			else
 			{
-				speed = speedNorm.scale(speedMagn - (hit.distScaled - margin)).projectOnPlane(hit.tri.normal)
+				speed = speedNorm.scale(speedMagn - (hit.distScaled - margin) - friction).projectOnPlane(hit.tri.normal)
 				pos = pos.add(speedNorm.scale(hit.distScaled - margin))
 			}
 		}

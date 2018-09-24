@@ -63,10 +63,13 @@ class Mat4
 	
 	static rotationFromTo(fromVec, toVec)
 	{
-		const axis = fromVec.cross(toVec).normalize()
+		const axis = fromVec.cross(toVec)
+		if (axis.magn() < 0.001)
+			return Mat4.identity()
+		
 		const angle = Math.acos(fromVec.dot(toVec))
 		
-		return Mat4.rotation(axis, -angle)
+		return Mat4.rotation(axis.normalize(), -angle)
 	}
 	
 	

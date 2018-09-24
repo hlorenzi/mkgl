@@ -5,6 +5,7 @@ let director = null
 let input =
 {
 	reset: false,
+	changeTrack: false,
 	forward: false,
 	reverse: false,
 	turnLeft: false,
@@ -68,6 +69,7 @@ function onKey(ev, down)
 		case "a": input.turnLeft = down; break
 		case "d": input.turnRight = down; break
 		case "r": input.reset = down; break
+		case "t": input.changeTrack = down; break
 		
 		default: return
 	}

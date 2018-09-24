@@ -11,7 +11,15 @@ class TrackDirector
 				
 		this.camera = new GfxCamera()
 		
-		this.track = new Track(this)
+		this.tracks =
+		[
+			() => Track.makeWavy(this),
+			() => Track.makeFlat(this),
+		]
+		
+		this.track = this.tracks[0]()
+		this.trackIndex = 0
+		
 		this.kart = new Kart(this)
 		
 		this.objects = []
@@ -24,6 +32,15 @@ class TrackDirector
 	
 	processFrame()
 	{
+		if (input.changeTrack)
+		{
+			input.changeTrack = false
+			
+			this.track.destroy()
+			this.trackIndex = (this.trackIndex + 1) % this.tracks.length
+			this.track = this.tracks[this.trackIndex]()
+		}
+		
 		let kartPos = this.kart.getCenter()
 		let kartForward = this.kart.getForwardVector().projectOnPlane(new Vec3(0, 0, -1)).normalize()
 		

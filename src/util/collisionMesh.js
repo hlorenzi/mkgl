@@ -68,6 +68,7 @@ class CollisionMesh
 		let frictionFactor = 0
 		
 		let iters = 0
+		let collided = false
 		
 		while (speed.magn() > 0.001 && iters < 10)
 		{
@@ -90,12 +91,13 @@ class CollisionMesh
 			}*/
 			else
 			{
+				collided = true
 				speed = speedNorm.scale(speedMagn - (hit.distScaled - margin) - friction).projectOnPlane(hit.tri.normal)
 				pos = pos.add(speedNorm.scale(hit.distScaled - margin))
 				frictionFactor += speedMagn - speed.magn()
 			}
 		}
 		
-		return [pos, frictionFactor]
+		return [pos, frictionFactor, collided]
 	}
 }
